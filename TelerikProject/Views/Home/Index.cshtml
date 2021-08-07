@@ -1,0 +1,110 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="row">
+    @(Html.Kendo().FloatingActionButton()
+    .Name("fab")
+    .ThemeColor(FloatingActionButtonThemeColor.Primary)
+    .Size(FloatingActionButtonSize.Medium)
+    .PositionMode(FloatingActionButtonPositionMode.Fixed)
+    .HtmlAttributes(new { @style="z-index: 100"})
+    .Icon("plus")
+    .Text("Add Item")
+    .AlignOffset(alignOffset=>alignOffset.Horizontal(50).Vertical(80))
+    .Events(events=>events.Click("addItem"))
+)
+    <div class="col-md-12">
+        <div class="list-group" id="list-tab" role="tablist">
+            <a class="k-button" id="list-houses-list" data-toggle="list" href="#list-houses" role="tab" aria-controls="houses">Houses</a>
+            <a class="k-button" id="list-flats-list" data-toggle="list" href="#list-flats" role="tab" aria-controls="flats">Flats</a>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="list-houses" role="tabpanel" aria-labelledby="list-houses-list">
+                <div class="cards-container">
+                    @if (ViewBag.houses != null)
+                    {
+                        @foreach (var item in ViewBag.houses)
+                        {
+                            <div class="k-card">
+                                <div class="k-card-header">
+                                    <h5 class="k-card-title">@item.Name</h5>
+                                </div>
+                                <img class="k-card-image" src="~/images/house1.jpg" />
+                                <div class="k-card-body">
+                                    <h5>@item.Cost / Night</h5>
+                                    <h5>Description</h5>
+                                    <p>@item.Description</p>
+                                </div>
+                                <div class="k-card-actions k-card-actions-stretched">
+                                    <a class="k-button" href="/Estate/Delete/@item.Id">Delete</a>
+                                    <a class="k-button" href="/Estate/Update/@item.Id">Edit</a>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="tab-pane fade" id="list-flats" role="tabpanel" aria-labelledby="list-flats-list">
+                <div class="cards-container">
+                    @if (ViewBag.flats != null)
+                    {
+                        @foreach (var item in ViewBag.flats)
+                        {
+                            <div class="k-card">
+                                <div class="k-card-header">
+                                    <h5 class="k-card-title">@item.Name</h5>
+                                </div>
+                                <img class="k-card-image" src="~/images/flat.jpg" />
+                                <div class="k-card-body">
+                                    <h5>@item.Cost / Night</h5>
+                                    <h5>Description</h5>
+                                    <p>@item.Description</p>
+                                </div>
+                                <div class="k-card-actions k-card-actions-stretched">
+                                    <a class="k-button" href="/Estate/Delete/@item.Id">Delete</a>
+                                    <a class="k-button" href="/Estate/Update/@item.Id">Edit</a>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .k-card {
+        width: 285px;
+        margin: 5%;
+    }
+
+    .k-card-footer {
+        text-align: center;
+    }
+</style>
+
+<script type="text/x-kendo-template" id="template">
+    <div id="details-container">
+        <h2>#= Id # #= Name #</h2>
+        <em>#= Type #</em>
+        <dl>
+            <dt>City: #= Cost #</dt>
+            <dt>Address: #= Description #</dt>
+        </dl>
+    </div>
+</script>
+
+<script type="text/javascript">
+    function addItem() {
+        location.href = 'https://localhost:44386/Estate/Create';
+    }
+</script>

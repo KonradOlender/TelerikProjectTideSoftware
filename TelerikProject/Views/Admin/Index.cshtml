@@ -1,0 +1,74 @@
+﻿@(Html.Kendo().Grid<TelerikProject.Models.Estate>()
+    .Name("Grid")
+    .Columns(columns => {
+        columns.Bound(e => e.Id);
+        columns.Bound(e => e.Name);
+        columns.Bound(e => e.Type);
+        columns.Bound(e => e.Cost);
+        columns.Command(command => command.Custom("ViewDetails").Click("showDetails").HtmlAttributes(new { type = "button", @class = "k-primary" }));
+        columns.Command(command => command.Custom("Delete").Click("itemDelete").HtmlAttributes(new { type = "button", @class = "k-primary" }));
+    })
+    .Filterable()
+    .Pageable()
+    .Sortable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Read(read => read.Action("GetAll", "Estate"))
+        )
+)
+@(Html.Kendo().Window().Name("Details")
+    .Title("Estate Details")
+    .Visible(false)
+    .Modal(true)
+    .Draggable(true)
+    .Width(300)
+)
+@(Html.Kendo().FloatingActionButton()
+    .Name("fab")
+    .ThemeColor(FloatingActionButtonThemeColor.Primary)
+    .Size(FloatingActionButtonSize.Medium)
+    .PositionMode(FloatingActionButtonPositionMode.Absolute)
+    .Icon("plus")
+    .Text("Add Item")
+    .AlignOffset(alignOffset=>alignOffset.Horizontal(50).Vertical(80))
+    .Events(events=>events.Click("addItem"))
+)
+
+<script type="text/x-kendo-template" id="template">
+    <div id="details-container">
+        <h2>Id: #= Id #</h2>
+        <h3>Name: #= Name #</h3>
+        <em>Type: #= Type #</em>
+        <dl>
+            <dt>Description: #= Description #</dt>
+            <dt>Cost: #= Cost #</dt>
+        </dl>
+    </div>
+</script>
+
+<script type="text/javascript">
+    function showDetails(e) {
+        e.preventDefault();
+
+        var detailsTemplate = kendo.template($("#template").html());
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        var wnd = $("#Details").data("kendoWindow");
+
+        wnd.content(detailsTemplate(dataItem));
+        wnd.center().open();
+    }
+
+    function itemDelete(e) {
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        $.ajax({
+            url: '/Estate/Delete/',
+            data: { Id: dataItem.Id }
+        }).done(function () {
+            location.href = "/Admin";
+        });;
+    }
+
+    function addItem() {
+        location.href = 'https://localhost:44386/Estate/Create';
+    }
+</script>
